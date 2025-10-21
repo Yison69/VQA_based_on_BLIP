@@ -1,0 +1,41 @@
+model:
+  arch: blip_vqa
+  model_type: vqav2
+  load_finetuned: false
+  pretrained: "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_capfilt_large.pth"
+
+datasets:
+  coco_vqa:
+    build_info:
+      images:
+        storage: "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/dataset/coco2014/" # 请再次确认这个路径是否正确 # 确保这个COCO路径是您用`ls`命令验证过的正确路径
+      annotations:
+        # train 需要2个文件
+        train:
+          storage:
+            - "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/dataset/vqav2/v2_mscoco_train2014_annotations.json"
+            - "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/dataset/vqav2/v2_OpenEnded_mscoco_train2014_questions.json"
+        # val 根据我们之前的调试，需要4个文件
+        val:
+          storage:
+            - "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/dataset/vqav2/vqa_val_eval.json"
+            - "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/dataset/vqav2/answer_list.json"
+            - "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/dataset/vqav2/v2_OpenEnded_mscoco_val2014_questions.json"
+            - "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/dataset/vqav2/v2_mscoco_val2014_annotations.json"
+
+run:
+  task: vqa
+  epochs: 2
+  batch_size_train: 32
+  batch_size_eval: 32
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 2e-5
+  min_lr: 0
+  warmup_lr: 1e-8
+  warmup_steps: 1000
+  seed: 42
+  output_dir: "/root/autodl-tmp/VQA_BLIP/VQA_based_on_BLIP/output/blip_vqa_finetune"
+  dist_url: "env://"
+  distributed: True
+  num_workers: 4
+  world_size: 1
